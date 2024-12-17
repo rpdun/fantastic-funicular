@@ -32,6 +32,13 @@ jobs:
         $shortcut = $ws.CreateShortcut($shortcutPath)
         $shortcut.TargetPath = $targetPath
         $shortcut.Save()
+        
+        # Create "Cursor" folder on Desktop
+        $desktopPath = [Environment]::GetFolderPath('Desktop')
+        $cursorFolderPath = Join-Path -Path $desktopPath -ChildPath "Cursor"
+        if (-not (Test-Path -Path $cursorFolderPath)) {
+          New-Item -Path $cursorFolderPath -ItemType Directory
+        }
 
     - name: Enable TS
       run: |
