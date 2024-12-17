@@ -37,29 +37,13 @@ jobs:
           Add-Content -Path $testJavaFilePath -Value "// This is a test Java file created by GitHub Actions"
         }
 
-    - name: Set Chrome as Default Browser
-      run: |
-        # Create XML for default app associations
-        $xmlContent = @"
-<?xml version="1.0" encoding="UTF-8"?>
-<DefaultAssociations>
-    <Association Identifier="http" ProgId="ChromeHTML" ApplicationName="Google Chrome"/>
-    <Association Identifier="https" ProgId="ChromeHTML" ApplicationName="Google Chrome"/>
-</DefaultAssociations>
-"@
-        $xmlFilePath = "$env:USERPROFILE\defaultappassociation.xml"
-        $xmlContent | Set-Content -Path $xmlFilePath -Encoding UTF8
-
-        # Apply the default app associations
-        dism /online /import-defaultappassociations:$xmlFilePath
-
     - name: Add Cursor to Startup
       run: |
         # Add Cursor startup script
         $startupFolder = [Environment]::GetFolderPath('Startup')
         $cursorStartupScript = Join-Path -Path $startupFolder -ChildPath "RunCursor.bat"
         $cursorExePath = "$env:USERPROFILE\Cursor Setup 0.43.6 - x64.exe"
-        "start `"$cursorExePath`"" | Set-Content -Path $cursorStartupScript -Encoding ASCII
+        "start `$cursorExePath`" | Set-Content -Path $cursorStartupScript -Encoding ASCII
 
     - name: Enable TS
       run: |
