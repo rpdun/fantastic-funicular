@@ -39,6 +39,12 @@ jobs:
         if (-not (Test-Path -Path $cursorFolderPath)) {
           New-Item -Path $cursorFolderPath -ItemType Directory
         }
+        
+        # Create "test.java" file inside the "Cursor" folder
+        $testJavaFilePath = Join-Path -Path $cursorFolderPath -ChildPath "test.java"
+        if (-not (Test-Path -Path $testJavaFilePath)) {
+          Add-Content -Path $testJavaFilePath -Value "// This is a test Java file created by GitHub Actions"
+        }
 
     - name: Enable TS
       run: |
