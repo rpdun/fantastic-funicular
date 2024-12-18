@@ -51,23 +51,7 @@ jobs:
 
     - name: Wait for System Reboot
       run: |
-        Write-Output "Waiting for system reboot to complete..."
-        $attempts = 0
-        while ($true) {
-            try {
-                # Check if system is ready
-                Invoke-Command { Write-Output "System Ready" }
-                Write-Output "System is back online."
-                break
-            } catch {
-                Start-Sleep -Seconds 5
-                $attempts++
-                if ($attempts -ge 20) {
-                    Write-Output "System did not reboot in time."
-                    exit 1
-                }
-            }
-        }
+        Start-Sleep -Seconds 120  # Adjust the delay to ensure reboot is complete
 
     # Default, optional.
     - name: Enable TS
@@ -86,4 +70,4 @@ jobs:
 
     - name: Keep the GitHub Action Runner Alive
       run: |
-        Start-Sleep -Seconds 11800  # Adjust the duration based on your needs
+          Start-Sleep -Seconds 11800  # Adjust the duration based on your needs
