@@ -39,20 +39,6 @@ jobs:
           Add-Content -Path $testJavaFilePath -Value "// This is a test Java file created by GitHub Actions"
         }
 
-    - name: Disable Windows Defender Credential Guard
-      run: |
-        # Disable Credential Guard
-        Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa' -Name 'LsaCfgFlags' -Value 0
-        Disable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All -NoRestart
-
-        # Reboot system
-        Write-Output "Rebooting to apply changes..."
-        shutdown /r /t 5
-
-    - name: Wait for System Reboot
-      run: |
-        Start-Sleep -Seconds 120  # Adjust the delay to ensure reboot is complete
-
     # Default, optional.
     - name: Enable TS
       run: |
