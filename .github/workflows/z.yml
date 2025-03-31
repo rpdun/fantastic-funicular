@@ -14,33 +14,21 @@ jobs:
     - name: Download and Install Playit
       run: |
         Invoke-WebRequest -Uri "https://github.com/playit-cloud/playit-agent/releases/download/v0.15.26/playit-windows-x86_64-signed.exe" -OutFile "$env:USERPROFILE\playit.exe"
-        Start-Sleep -Seconds 5  # Give some time for the download to complete
+        Start-Sleep -Seconds 5  
 
-    - name: Download and Install Cursor
+    - name: Install Google Chrome
       run: |
-        # Download Cursor
-        Invoke-WebRequest -Uri "https://downloader.cursor.sh/windows/nsis/x64" -OutFile "$env:USERPROFILE\Cursor Setup 0.43.6 - x64.exe"
-        
-        # Install Cursor
-        Start-Process -FilePath "$env:USERPROFILE\Cursor Setup 0.43.6 - x64.exe" -ArgumentList "/S" -NoNewWindow -Wait  # /S for silent install
-        
-        Start-Sleep -Seconds 5  # Give some time for the installation to complete
+        $chromeInstaller = "$env:USERPROFILE\chrome_installer.exe"
+        Invoke-WebRequest -Uri "https://dl.google.com/chrome/install/latest/chrome_installer.exe" -OutFile $chromeInstaller
+        Start-Process -FilePath $chromeInstaller -ArgumentList "/silent /install" -NoNewWindow -Wait
+        Start-Sleep -Seconds 5  
 
-        # Create "Cursor" folder on Desktop
-        $desktopPath = [Environment]::GetFolderPath('Desktop')
-        $cursorFolderPath = Join-Path -Path $desktopPath -ChildPath "Cursor"
-        if (-not (Test-Path -Path $cursorFolderPath)) {
-          New-Item -Path $cursorFolderPath -ItemType Directory
-        }
-        
-        # Create "test.java" file inside the "Cursor" folder
-        $testJavaFilePath = Join-Path -Path $cursorFolderPath -ChildPath "test.java"
-        if (-not (Test-Path -Path $testJavaFilePath)) {
-          Add-Content -Path $testJavaFilePath -Value "// This is a test Java file created by GitHub Actions"
-        }
+    - name: Set Chrome to Open Hypixel on Startup
+      run: |
+        $startupPath = "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\open_chrome.bat"
+        Set-Content -Path $startupPath -Value '"C:\Program Files\Google\Chrome\Application\chrome.exe" --new-window https://hypixel.net'
 
-    # Default, optional.
-    - name: Enable TS
+    - name: Enable Remote Desktop
       run: |
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -Value 0
         Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
@@ -49,11 +37,11 @@ jobs:
 
     - name: Start Playit and Set Up RDP Tunnel
       env:
-        PLAYIT_AUTH_KEY: ${{ secrets.PL }} 
+        PLAYIT_AUTH_KEY: ${{ secrets.PL }}
       run: |
         Start-Process -FilePath "$env:USERPROFILE\playit.exe" -ArgumentList "--secret $env:PLAYIT_AUTH_KEY" -NoNewWindow -Wait
         Start-Process -FilePath "$env:USERPROFILE\playit.exe" -NoNewWindow
 
     - name: Keep the GitHub Action Runner Alive
       run: |
-          Start-Sleep -Seconds 11800  # Adjust the duration based on your needs
+        Start-Sleep -Seconds 11800  
