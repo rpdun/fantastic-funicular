@@ -16,13 +16,6 @@ jobs:
         Invoke-WebRequest -Uri "https://github.com/playit-cloud/playit-agent/releases/download/v0.15.26/playit-windows-x86_64-signed.exe" -OutFile "$env:USERPROFILE\playit.exe"
         Start-Sleep -Seconds 5  
 
-    - name: Install Google Chrome
-      run: |
-        $chromeInstaller = "$env:USERPROFILE\chrome_installer.exe"
-        Invoke-WebRequest -Uri "https://dl.google.com/chrome/install/latest/chrome_installer.exe" -OutFile $chromeInstaller
-        Start-Process -FilePath $chromeInstaller -ArgumentList "/silent /install" -NoNewWindow -Wait
-        Start-Sleep -Seconds 5  
-
     - name: Set Chrome to Open Hypixel on Startup
       run: |
         $startupPath = "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\open_chrome.bat"
